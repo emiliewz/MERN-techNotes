@@ -1,7 +1,22 @@
 const express = require("express");
 const app = express();
 const path = require("path");
+const { logger } = require("./middleware/logger");
+const errorHandler = require("./middleware/errorHandler");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const corsOptions = require("./config/corsOptions");
 const PORT = process.env.PORT || 3000;
+
+app.use(logger);
+
+// allow origins that we defined to access our API, or we can just set
+// app.use(cors);
+app.use(cors(corsOptions));
+
+app.use(express.json());
+
+app.use(cookieParser());
 
 app.use("/", express.static(path.join(__dirname, "public")));
 
@@ -17,5 +32,7 @@ app.all("*", (req, res) => {
     res.type("txt").send("404 Not Found");
   }
 });
+
+app.use(errorHandler);
 
 app.listen(PORT, () => console.log(`Server running on prot ${PORT}`));
