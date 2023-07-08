@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const AutoIncrement = require("mongoose-sequence")(mongoose);
+// const AutoIncrement = require("mongoose-sequence")(mongoose);
+const { autoIncrement } = require("mongoose-plugin-autoinc");
 
 const NoteSchema = new mongoose.Schema(
   {
@@ -27,10 +28,15 @@ const NoteSchema = new mongoose.Schema(
 );
 
 // create a separate collections - counter, which tracks this sequential number and insert into notes
-NoteSchema.plugin(AutoIncrement, {
-  inc_field: "ticket",
-  id: "ticketNums",
-  start_seq: 500,
+// NoteSchema.plugin(AutoIncrement, {
+//   inc_field: "ticket",
+//   id: "ticketNums",
+//   start_seq: 500,
+// });
+NoteSchema.plugin(autoIncrement, {
+  model: "Note",
+  field: "ticketNums",
+  startAt: 500,
 });
 
 module.exports = mongoose.model("Note", NoteSchema);
