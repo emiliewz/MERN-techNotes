@@ -1,7 +1,6 @@
 const User = require("../models/User");
 const Note = require("../models/Note");
 const asyncHandler = require("express-async-handler");
-const bcrypt = require("bcrypt");
 
 // @desc Get all notes
 // @route GET /notes
@@ -41,7 +40,7 @@ const createNewNote = asyncHandler(async (req, res) => {
     return res.status(409).json({ message: "Duplicate note title" });
   }
 
-  const findUser = await User.findById(user).exec();
+  const findUser = await User.findById(user).lean().exec();
 
   if (!findUser) {
     return res.status(400).json({ message: "User not found" });
@@ -80,6 +79,12 @@ const updateNote = asyncHandler(async (req, res) => {
   // Allow renaming of the original note
   if (duplicate && duplicate?._id.toString() !== id) {
     return res.status(409).json({ message: "Duplicate note title" });
+  }
+
+  // Check User id
+  const findUser = await User.findById(user).lean().exec();
+  if (!findUser) {
+    return res.status(400).json({ message: "User not found" });
   }
 
   note.user = user;
