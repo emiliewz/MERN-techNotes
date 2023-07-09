@@ -52,7 +52,7 @@ const createNewNote = asyncHandler(async (req, res) => {
   const note = await Note.create(noteObject);
 
   if (note) {
-    res.status(201).json({ message: `New note created` });
+    res.status(201).json({ message: "New note created" });
   } else {
     res.status(400).json({ message: "Invalid note data received" });
   }
@@ -69,6 +69,7 @@ const updateNote = asyncHandler(async (req, res) => {
   }
 
   const note = await Note.findById(id).exec();
+
   if (!note) {
     return res.status(400).json({ message: "Note not found" });
   }
